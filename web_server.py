@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -10,6 +10,7 @@ def home():
 
 @app.route('/main')
 def main():
+    print("Main route accessed")  # Pour le débogage
     return render_template('main.html')
 
 if __name__ == '__main__':
