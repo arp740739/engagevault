@@ -21,12 +21,32 @@ def verify_twitter_follow():
         print("Starting verification...")  # Log de débogage
         
         try:
-            # Pour le test, on retourne toujours success
-            # Nous ajouterons la vérification réelle plus tard
+            # ID de votre compte EngageVault
+            source_user_id = "1874098225139113984"
+            
+            # Vérifier les followers
+            response = client.get_users_followers(
+                source_user_id,
+                user_fields=['username']
+            )
+            
+            print(f"Response: {response}")  # Log de débogage
+            
+            if response and response.data:
+                follower_usernames = [user.username for user in response.data]
+                print(f"Followers: {follower_usernames}")  # Log de débogage
+                
+                # Vérifier si l'utilisateur est dans la liste
+                if "EngageVault" in follower_usernames:
+                    return jsonify({
+                        "success": True,
+                        "message": "Congratulations! You earned 50 points!",
+                        "points": 50
+                    })
+            
             return jsonify({
-                "success": True,
-                "message": "Congratulations! You earned 50 points!",
-                "points": 50
+                "success": False,
+                "message": "You need to follow @EngageVault first!"
             })
                 
         except Exception as e:
