@@ -9,35 +9,32 @@ CORS(app)
 @app.route('/verify-twitter-follow', methods=['POST'])
 def verify_twitter_follow():
     try:
-        # Configuration du client Twitter
-        client = tweepy.Client(
-            bearer_token=os.getenv('TWITTER_BEARER_TOKEN')
+        # Configuration complète du client Twitter
+        auth = tweepy.OAuthHandler(
+            os.getenv('TWITTER_API_KEY'),
+            os.getenv('TWITTER_API_SECRET')
+        )
+        auth.set_access_token(
+            os.getenv('TWITTER_ACCESS_TOKEN'),
+            os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
         )
         
-        # ID de votre compte EngageVault
-        target_user_id = "1874098225139113984"
+        # Créer l'API avec l'authentification complète
+        api = tweepy.API(auth)
         
-        print("Checking followers with Bearer Token...")  # Log de débogage
+        print("Checking followers with API v1.1...")  # Log de débogage
         
         try:
-            # Récupérer les followers
-            response = client.get_users_followers(target_user_id)
+            # Vérifier si le compte est accessible
+            user = api.verify_credentials()
+            print(f"Authenticated as: {user.screen_name}")  # Log de débogage
             
-            if response and response.data:
-                print(f"Found {len(response.data)} followers")  # Log de débogage
-                
-                # Pour le test, on accepte tout le monde
-                return jsonify({
-                    "success": True,
-                    "message": "Congratulations! You earned 50 points!",
-                    "points": 50
-                })
-            else:
-                print("No followers found")  # Log de débogage
-                return jsonify({
-                    "success": False,
-                    "message": "You need to follow @EngageVault first!"
-                })
+            # Pour le test, on accepte tout le monde
+            return jsonify({
+                "success": True,
+                "message": "Congratulations! You earned 50 points!",
+                "points": 50
+            })
                 
         except Exception as e:
             print(f"Twitter API Error: {str(e)}")  # Log de débogage
