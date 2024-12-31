@@ -1,4 +1,100 @@
-<!-- Les scripts restent identiques -->
+<script>
+async function connectWithX() {
+    const button = document.querySelector('.twitter-button');
+    try {
+        button.classList.add('loading');
+        button.disabled = true;
+        
+        console.log("Starting X connection...");
+        const response = await fetch('/auth/twitter', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.auth_url) {
+            window.location.href = data.auth_url;
+        } else {
+            document.querySelector('.error-message').textContent = 'Error connecting to X';
+            button.classList.remove('loading');
+            button.disabled = false;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.querySelector('.error-message').textContent = 'Connection error';
+        button.classList.remove('loading');
+        button.disabled = false;
+    }
+}
+
+async function verifyTwitterLink() {
+    const button = document.querySelector('.verify-button');
+    try {
+        button.classList.add('loading');
+        button.disabled = true;
+        
+        const response = await fetch('/verify-twitter-follow', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            button.classList.remove('loading');
+            button.classList.add('success');
+            button.innerHTML = '<svg class="checkmark" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Connected!';
+            
+            // Confettis améliorés
+            const colors = ['#1DA1F2', '#4CAF50', '#9C27B0', '#FF9800'];
+            const end = Date.now() + 2000;
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Message de félicitations animé
+            const congrats = document.createElement('div');
+            congrats.className = 'congrats-message';
+            congrats.textContent = 'Congratulations! +50 points earned!';
+            document.querySelector('.task-card').appendChild(congrats);
+        } else {
+            button.classList.remove('loading');
+            button.disabled = false;
+            document.querySelector('.error-message').textContent = data.message;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        button.classList.remove('loading');
+        button.disabled = false;
+        document.querySelector('.error-message').textContent = 'Verification error';
+    }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
 <div class="task-card">
     <div class="task-icon">🎯</div>
@@ -9,41 +105,112 @@
         <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right: 8px; vertical-align: middle;">
             <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
         </svg>
-        Connect with X
+        <span>Connect with X</span>
+        <div class="loading-spinner"></div>
     </button>
     <button class="verify-button" onclick="verifyTwitterLink()">
-        Verify Connection
+        <span>Verify Connection</span>
+        <div class="loading-spinner"></div>
     </button>
     <div class="error-message"></div>
 </div>
 
 <style>
-/* Styles existants restent identiques jusqu'à .points */
+/* Styles existants... */
 
-.points {
-    color: #4CAF50;
-    font-size: 20px;
-    font-weight: bold;
-    margin: 15px 0;
-    animation: pulse 2s infinite;
+/* Animation de chargement */
+.loading-spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 8px;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-/* Le reste des styles reste identique */
+.loading .loading-spinner {
+    display: inline-block;
+}
 
-.twitter-button {
-    background: #000000;
+.loading span {
+    opacity: 0.7;
+}
+
+/* Animation de succès */
+.success {
+    background: #4CAF50 !important;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    margin-right: 8px;
+    animation: checkmark 0.3s ease-in-out;
+}
+
+@keyframes checkmark {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+/* Message de félicitations */
+.congrats-message {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
     color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    animation: slideDown 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
 }
 
-/* Le reste des styles reste identique */
+@keyframes slideDown {
+    from { transform: translate(-50%, -20px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; }
+}
+
+/* Amélioration des boutons */
+.twitter-button, .verify-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.twitter-button:after, .verify-button:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255,255,255,.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.twitter-button:focus:not(:active):after, .verify-button:focus:not(:active):after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% { transform: scale(0, 0); opacity: .5; }
+    20% { transform: scale(25, 25); opacity: .3; }
+    100% { opacity: 0; transform: scale(40, 40); }
+}
 </style>
