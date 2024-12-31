@@ -1,28 +1,30 @@
-<script>
-async function connectWithX() {
-    const button = document.querySelector('.twitter-button');
-    try {
-        console.log("Starting X connection..."); // Debug log
-        button.classList.add('loading');
-        
-        const response = await fetch('/auth/twitter');
-        console.log("Response received:", response); // Debug log
-        
-        const data = await response.json();
-        console.log("Data received:", data); // Debug log
-        
-        if (data.success && data.auth_url) {
-            console.log("Redirecting to:", data.auth_url); // Debug log
-            window.location.href = data.auth_url;
-        } else {
-            console.error("Error data:", data); // Debug log
-            document.querySelector('.error-message').textContent = data.message || 'Error connecting to X';
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>EngageVault</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-    } catch (error) {
-        console.error('Connection error:', error); // Debug log
-        document.querySelector('.error-message').textContent = 'Connection error';
-    } finally {
-        button.classList.remove('loading');
-    }
-}
-</script>
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Welcome to EngageVault</h1>
+        <p>Testing deployment...</p>
+    </div>
+</body>
+</html>
