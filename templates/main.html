@@ -1,33 +1,68 @@
-// Dans la fonction verifyFollow()
-function verifyFollow() {
-    console.log('Sending verification request...'); // Log de débogage
-    
-    fetch('/verify-twitter-follow', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- ... autres balises head ... -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="task-card">
+        <!-- ... contenu existant ... -->
+    </div>
+
+    <div id="congratsModal" class="modal">
+        <!-- ... modal content ... -->
+    </div>
+
+    <script>
+        function showCongratulations() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            document.getElementById('congratsModal').style.display = 'block';
         }
-    })
-    .then(response => {
-        console.log('Response:', response); // Log de débogage
-        return response.json();
-    })
-    .then(data => {
-        console.log('Data:', data); // Log de débogage
-        if (data.success) {
-            showCongratulations();
-        } else {
-            const resultMessage = document.getElementById('result-message');
-            resultMessage.style.display = 'block';
-            resultMessage.className = 'error';
-            resultMessage.textContent = '❌ ' + data.message;
+
+        function closeModal() {
+            document.getElementById('congratsModal').style.display = 'none';
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        const resultMessage = document.getElementById('result-message');
-        resultMessage.style.display = 'block';
-        resultMessage.className = 'error';
-        resultMessage.textContent = '❌ An error occurred. Please try again.';
-    });
-}
+
+        function followTwitter() {
+            window.open('https://twitter.com/EngageVault', '_blank');
+        }
+
+        function verifyFollow() {
+            console.log('Sending verification request...');
+            
+            fetch('/verify-twitter-follow', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                console.log('Response:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data:', data);
+                if (data.success) {
+                    showCongratulations();
+                } else {
+                    const resultMessage = document.getElementById('result-message');
+                    resultMessage.style.display = 'block';
+                    resultMessage.className = 'error';
+                    resultMessage.textContent = '❌ ' + data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const resultMessage = document.getElementById('result-message');
+                resultMessage.style.display = 'block';
+                resultMessage.className = 'error';
+                resultMessage.textContent = '❌ An error occurred. Please try again.';
+            });
+        }
+    </script>
+</body>
+</html>
