@@ -11,8 +11,27 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #1a1a1a;  /* Fond sombre */
+            background: linear-gradient(
+                -45deg, 
+                #FF6B6B,
+                #4ECDC4,
+                #45B7D1,
+                #96C93D,
+                #E056FD,
+                #FF7E5F
+            );
+            background-size: 300% 300%;
+            animation: gradient 10s ease infinite;
             font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
         }
 
         .loader-container {
@@ -20,6 +39,7 @@
             width: 100%;
             max-width: 500px;
             padding: 20px;
+            z-index: 1;
         }
 
         .logo {
@@ -40,17 +60,16 @@
             font-size: 24px;
             margin-top: 20px;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .quote {
-            color: #ffffff;
+            color: white;
             font-size: 18px;
             font-style: italic;
             margin-top: 20px;
-            opacity: 0.8;
-            max-width: 80%;
-            margin-left: auto;
-            margin-right: auto;
+            opacity: 0.9;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .loading-dots {
@@ -69,9 +88,89 @@
             80%, 100% { content: ''; }
         }
 
-        /* Styles pour l'onboarding restent les mêmes */
+        /* Styles pour l'onboarding */
         .onboarding {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transform: translateX(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .slide.active {
+            transform: translateX(0);
+        }
+
+        .slide-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .slide h2 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide p {
+            color: white;
+            font-size: 18px;
+            max-width: 80%;
+            margin: 0 auto 30px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .next-button {
+            background: white;
+            color: #4ECDC4;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .next-button:hover {
+            transform: scale(1.05);
+        }
+
+        .progress-dots {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: white;
         }
     </style>
 </head>
@@ -86,6 +185,63 @@
         </div>
     </div>
 
-    <!-- Le reste du code pour l'onboarding reste le même -->
+    <div class="onboarding">
+        <div class="slide" id="slide1">
+            <div class="slide-icon">🌟</div>
+            <h2>Welcome to EngageVault!</h2>
+            <p>Your gateway to enhanced social media engagement and rewards.</p>
+            <button class="next-button" onclick="nextSlide(1)">Next</button>
+        </div>
+
+        <div class="slide" id="slide2">
+            <div class="slide-icon">🎯</div>
+            <h2>How It Works</h2>
+            <p>Complete social tasks, earn points, and boost your online presence. It's that simple!</p>
+            <button class="next-button" onclick="nextSlide(2)">Next</button>
+        </div>
+
+        <div class="slide" id="slide3">
+            <div class="slide-icon">🚀</div>
+            <h2>Boost Your Growth</h2>
+            <p>Engage with others and watch your social media presence grow organically.</p>
+            <button class="next-button" onclick="nextSlide(3)">Next</button>
+        </div>
+
+        <div class="slide" id="slide4">
+            <div class="slide-icon">⭐</div>
+            <h2>Ready to Start?</h2>
+            <p>Join our community of early adopters and get exclusive benefits!</p>
+            <button class="next-button" onclick="startApp()">Get Started</button>
+        </div>
+
+        <div class="progress-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.querySelector('.loader-container').style.display = 'none';
+                document.querySelector('.onboarding').style.display = 'block';
+                document.querySelector('#slide1').classList.add('active');
+            }, 2000);
+        });
+
+        function nextSlide(currentSlide) {
+            document.querySelector(`#slide${currentSlide}`).classList.remove('active');
+            document.querySelector(`#slide${currentSlide + 1}`).classList.add('active');
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function startApp() {
+            alert('Welcome to EngageVault! 🚀');
+        }
+    </script>
 </body>
 </html>
