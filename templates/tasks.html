@@ -17,6 +17,25 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-logo {
+            width: 150px;
+            height: 150px;
+            animation: pulse 2s infinite;
+        }
+
         .task-card {
             background: rgba(31, 41, 55, 0.85);
             border-radius: 20px;
@@ -28,6 +47,7 @@
             width: 90%;
             max-width: 400px;
             color: white;
+            display: none;
         }
 
         @keyframes gradient {
@@ -35,12 +55,33 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
-    <div class="task-card">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="/static/images/logo.png" alt="EngageVault Logo" class="loading-logo">
+    </div>
+
+    <!-- Task Card -->
+    <div class="task-card" id="taskCard">
         <h1>Welcome to EngageVault</h1>
         <p>Task system loading...</p>
     </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('taskCard').style.display = 'block';
+            }, 2000);
+        });
+    </script>
 </body>
 </html>
