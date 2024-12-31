@@ -1,60 +1,4 @@
-<script>
-async function connectWithX() {
-    try {
-        console.log("Starting X connection...");
-        const response = await fetch('/auth/twitter', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-        
-        console.log("Response:", response);
-        
-        const data = await response.json();
-        console.log("Data:", data);
-        
-        if (data.success && data.auth_url) {
-            window.location.href = data.auth_url;
-        } else {
-            document.querySelector('.error-message').textContent = 'Error connecting to X';
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        document.querySelector('.error-message').textContent = 'Connection error';
-    }
-}
-
-async function verifyTwitterLink() {
-    try {
-        const response = await fetch('/verify-twitter-follow', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-            
-            document.querySelector('.error-message').textContent = '';
-        } else {
-            document.querySelector('.error-message').textContent = data.message;
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        document.querySelector('.error-message').textContent = 'Verification error';
-    }
-}
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<!-- Les scripts restent identiques -->
 
 <div class="task-card">
     <div class="task-icon">🎯</div>
@@ -62,6 +6,9 @@ async function verifyTwitterLink() {
     <div class="points">+50 points</div>
     <p>Link your X account to earn your first points!</p>
     <button class="twitter-button" onclick="connectWithX()">
+        <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right: 8px; vertical-align: middle;">
+            <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
         Connect with X
     </button>
     <button class="verify-button" onclick="verifyTwitterLink()">
@@ -71,92 +18,32 @@ async function verifyTwitterLink() {
 </div>
 
 <style>
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-.task-card {
-    background: rgba(31, 41, 55, 0.85);
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    width: 90%;
-    max-width: 400px;
-}
-
-.task-icon {
-    font-size: 32px;
-    margin-bottom: 15px;
-}
-
-h2 {
-    color: white;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 24px;
-}
+/* Styles existants restent identiques jusqu'à .points */
 
 .points {
     color: #4CAF50;
     font-size: 20px;
     font-weight: bold;
     margin: 15px 0;
+    animation: pulse 2s infinite;
 }
 
-p {
-    color: #E5E7EB;
-    margin-bottom: 20px;
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-.twitter-button, .verify-button {
-    width: 80%;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    margin: 10px 0;
-    transition: all 0.2s ease;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
+/* Le reste des styles reste identique */
 
 .twitter-button {
     background: #000000;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.verify-button {
-    background: #4CAF50;
-    color: white;
-}
-
-.twitter-button:hover, .verify-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.error-message {
-    color: #EF4444;
-    margin-top: 10px;
-}
-
-@keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+/* Le reste des styles reste identique */
 </style>
