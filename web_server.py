@@ -6,5 +6,6 @@ app = Flask(__name__)
 def index():
     return "Hello from EngageVault!"
 
-if __name__ == '__main__':
-    app.run()
+# Ne pas inclure cette partie pour le déploiement
+# if __name__ == '__main__':
+#     app.run()
