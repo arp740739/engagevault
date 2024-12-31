@@ -4,7 +4,7 @@
     <div class="points">+50 points</div>
     <p>Link your X account to earn your first points!</p>
     <button class="twitter-button" onclick="window.location.href='https://twitter.com/EngageVault'">
-        <i class="fab fa-twitter"></i> Connect with X
+        Connect with X
     </button>
     <button class="verify-button" onclick="verifyTwitterLink()">
         Verify Connection
@@ -24,25 +24,14 @@ body {
     animation: gradient 15s ease infinite;
 }
 
-@keyframes gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
 .task-card {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
+    background: rgba(31, 41, 55, 0.85);
+    border-radius: 20px;
     padding: 30px;
     text-align: center;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     width: 90%;
     max-width: 400px;
 }
@@ -53,19 +42,20 @@ body {
 }
 
 h2 {
-    color: #333;
+    color: white;
     margin-bottom: 10px;
+    font-weight: 600;
 }
 
 .points {
-    color: #1DA1F2;
+    color: #60A5FA;
     font-size: 20px;
     font-weight: bold;
     margin: 15px 0;
 }
 
 p {
-    color: #666;
+    color: #E5E7EB;
     margin-bottom: 20px;
 }
 
@@ -75,10 +65,10 @@ p {
     border: none;
     border-radius: 25px;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 500;
     cursor: pointer;
     margin: 10px 0;
-    transition: transform 0.2s;
+    transition: all 0.2s ease;
 }
 
 .twitter-button {
@@ -92,11 +82,18 @@ p {
 }
 
 .twitter-button:hover, .verify-button:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .error-message {
-    color: #ff4444;
+    color: #EF4444;
     margin-top: 10px;
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 </style>
