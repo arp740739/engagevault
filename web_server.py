@@ -1,14 +1,38 @@
 from flask import Flask, render_template, jsonify
 from flask_cors import CORS
 import tweepy
+import os
+from dotenv import load_dotenv
+
+# Chargement des variables d'environnement
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Configuration Twitter API
-auth = tweepy.OAuthHandler("YOUR_CONSUMER_KEY", "YOUR_CONSUMER_SECRET")
-auth.set_access_token("YOUR_ACCESS_TOKEN", "YOUR_ACCESS_TOKEN_SECRET")
-api = tweepy.API(auth)
+# Vérification de la présence des clés nécessaires
+required_env_vars = [
+    'TWITTER_API_KEY',
+    'TWITTER_API_SECRET',
+    'TWITTER_ACCESS_TOKEN',
+    'TWITTER_ACCESS_TOKEN_SECRET'
+]
+
+for var in required_env_vars:
+    if not os.getenv(var):
+        print(f"Warning: {var} is not set in environment variables")
+
+# Configuration Twitter API avec gestion d'erreurs
+try:
+    client = tweepy.Client(
+        consumer_key=os.getenv('TWITTER_API_KEY', ''),
+        consumer_secret=os.getenv('TWITTER_API_SECRET', ''),
+        access_token=os.getenv('TWITTER_ACCESS_TOKEN', ''),
+        access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET', '')
+    )
+except Exception as e:
+    print(f"Error initializing Twitter client: {e}")
+    client = None
 
 @app.route('/')
 def home():
@@ -20,19 +44,45 @@ def main():
 
 @app.route('/verify-twitter-follow', methods=['POST'])
 def verify_twitter_follow():
+    if not client:
+        return jsonify({
+            "success": False,
+            "message": "Twitter API not configured properly"
+        })
+
     try:
-        # Vérifier si l'utilisateur suit @EngageVault
-        friendship = api.get_friendship(source_screen_name="USER_SCREEN_NAME", 
-                                     target_screen_name="EngageVault")
+        # ID de votre compte EngageVault
+        target_user_id = "1874098225139113984"
         
-        if friendship[0].following:
-            # Ici, vous ajouteriez la logique pour attribuer les points
-            return jsonify({"success": True})
+        # Vérifier les followers
+        followers = client.get_users_followers(target_user_id)
+        
+        if followers and followers.data:
+            return jsonify({
+                "success": True,
+                "message": "Congratulations! You earned 50 points!",
+                "points": 50
+            })
         else:
-            return jsonify({"success": False})
+            return jsonify({
+                "success": False,
+                "message": "Please make sure you followed @EngageVault"
+            })
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"success": False})
+        print(f"Error in verify_twitter_follow: {e}")
+        return jsonify({
+            "success": False,
+            "message": "An error occurred while verifying. Please try again."
+        })
+
+# Route de test pour vérifier que l'application fonctionne
+@app.route('/health')
+def health_check():
+    return jsonify({
+        "status": "healthy",
+        "twitter_api": "configured" if client else "not configured"
+    })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
