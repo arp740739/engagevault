@@ -240,7 +240,22 @@
         }
 
         function startApp() {
-            alert('Welcome to EngageVault! 🚀');
+            try {
+                // Afficher un message de débogage
+                console.log('Starting app...');
+                
+                // Redirection directe sans transition
+                window.location.href = 'https://engagevault.onrender.com/main';
+                
+                // Si la redirection ne fonctionne pas, afficher une erreur
+                console.log('Redirection failed, trying alternative method...');
+                
+                // Méthode alternative
+                document.location.href = '/main';
+            } catch (error) {
+                console.error('Error during redirection:', error);
+                alert('Error during redirection. Please try again.');
+            }
         }
     </script>
 </body>
