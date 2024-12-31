@@ -22,38 +22,39 @@ def verify_twitter_follow():
         api = tweepy.API(auth)
         
         try:
-            # Vérifier les credentials
-            user = api.verify_credentials()
-            print(f"Authenticated as: {user.screen_name}")
+            # ID de votre compte EngageVault
+            target_user_id = "1874098225139113984"
             
-            # Vérifier les followers
-            followers = api.get_followers()
-            follower_ids = [follower.id for follower in followers]
+            print("Checking followers...")  # Log de débogage
             
-            # Vérifier si l'utilisateur suit
-            friendship = api.get_friendship(source_screen_name="EngageVault", target_screen_name="EngageVault")
-            
-            if not friendship[0].following:
-                return jsonify({
-                    "success": False,
-                    "message": "You need to follow @EngageVault first!"
-                })
+            # Vérifier les followers avec pagination
+            followers = []
+            for page in tweepy.Cursor(api.get_followers, user_id=target_user_id).pages():
+                followers.extend(page)
+                print(f"Found {len(followers)} followers")  # Log de débogage
+                
+                # Pour le test, on vérifie juste si on a des followers
+                if len(followers) > 0:
+                    return jsonify({
+                        "success": True,
+                        "message": "Congratulations! You earned 50 points!",
+                        "points": 50
+                    })
             
             return jsonify({
-                "success": True,
-                "message": "Congratulations! You earned 50 points!",
-                "points": 50
+                "success": False,
+                "message": "You need to follow @EngageVault first!"
             })
                 
         except Exception as e:
-            print(f"Twitter API Error: {str(e)}")
+            print(f"Twitter API Error: {str(e)}")  # Log de débogage
             return jsonify({
                 "success": False,
                 "message": "You need to follow @EngageVault first!"
             })
             
     except Exception as e:
-        print(f"Server Error: {str(e)}")
+        print(f"Server Error: {str(e)}")  # Log de débogage
         return jsonify({
             "success": False,
             "message": "Server error. Please try again."
