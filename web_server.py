@@ -11,55 +11,40 @@ CORS(app)
 
 # Configuration Twitter API
 client = tweepy.Client(
-    bearer_token=os.getenv('TWITTER_BEARER_TOKEN'),  # Ajout du bearer token
+    bearer_token=os.getenv('TWITTER_BEARER_TOKEN'),
     consumer_key=os.getenv('TWITTER_API_KEY'),
     consumer_secret=os.getenv('TWITTER_API_SECRET'),
     access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
     access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 )
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/main')
+def main():
+    return render_template('main.html')
+
 @app.route('/verify-twitter-follow', methods=['POST'])
 def verify_twitter_follow():
     try:
-        # ID de votre compte EngageVault
-        target_user_id = "1874098225139113984"  # Votre ID Twitter
+        print("Verification started...")  # Log de débogage
+        target_user_id = "1874098225139113984"
         
-        # Ajout de logs pour le débogage
-        print("Checking followers...")
-        print(f"Using API keys: {os.getenv('TWITTER_API_KEY')[:5]}...")
+        # Version simplifiée pour tester
+        return jsonify({
+            "success": True,
+            "message": "Congratulations! You earned 50 points!",
+            "points": 50
+        })
         
-        try:
-            # Récupérer les followers avec pagination
-            followers = []
-            for response in tweepy.Paginator(
-                client.get_users_followers,
-                target_user_id,
-                max_results=100
-            ):
-                if response.data:
-                    followers.extend(response.data)
-                    
-            print(f"Found {len(followers)} followers")
-            
-            # Pour le test, acceptons toujours le follow
-            return jsonify({
-                "success": True,
-                "message": "Congratulations! You earned 50 points!",
-                "points": 50
-            })
-            
-        except Exception as e:
-            print(f"Twitter API Error: {str(e)}")
-            return jsonify({
-                "success": False,
-                "message": f"Twitter API Error: {str(e)}"
-            })
-            
     except Exception as e:
-        print(f"Server Error: {str(e)}")
+        print(f"Error: {str(e)}")  # Log de débogage
         return jsonify({
             "success": False,
-            "message": f"Server error: {str(e)}"
+            "message": "Error checking follow status"
         })
 
-# ... autres routes ...
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
