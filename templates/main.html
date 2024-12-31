@@ -3,9 +3,68 @@
     <h2>First Task: Link your X account</h2>
     <div class="points">+50 points</div>
     <p>Link your X account to earn your first points!</p>
-    <button class="twitter-button" onclick="window.location.href='https://twitter.com/EngageVault'">
-        <i class="fab fa-twitter"></i> Connect with X
-    </button>
-    <button class="verify-button" onclick="verifyTwitterLink()">Verify Connection</button>
+    <div class="button-container">
+        <button class="twitter-button" onclick="window.location.href='https://twitter.com/EngageVault'">
+            <i class="fab fa-twitter"></i> Connect with X
+        </button>
+        <button class="verify-button" onclick="verifyTwitterLink()">
+            Verify Connection
+        </button>
+    </div>
     <div class="error-message"></div>
 </div>
+
+<style>
+.task-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.task-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.points {
+    color: #1DA1F2;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.twitter-button, .verify-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.twitter-button {
+    background: #1DA1F2;
+    color: white;
+}
+
+.verify-button {
+    background: #4CAF50;
+    color: white;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+</style>
