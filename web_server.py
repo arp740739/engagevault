@@ -9,40 +9,32 @@ CORS(app)
 @app.route('/verify-twitter-follow', methods=['POST'])
 def verify_twitter_follow():
     try:
-        # Configuration du client Twitter v2
+        # Configuration du client Twitter v2 avec toutes les clés
         client = tweepy.Client(
-            bearer_token=os.getenv('TWITTER_BEARER_TOKEN')
+            bearer_token=os.getenv('TWITTER_BEARER_TOKEN'),
+            consumer_key=os.getenv('TWITTER_API_KEY'),
+            consumer_secret=os.getenv('TWITTER_API_SECRET'),
+            access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
+            access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
         )
         
-        print("Starting verification with Bearer Token...")  # Log de débogage
+        print("Starting verification with full authentication...")  # Log de débogage
         
         try:
             # ID de votre compte EngageVault
             target_user_id = "1874098225139113984"
             
-            # Récupérer les followers avec pagination
-            followers = []
-            for response in tweepy.Paginator(
-                client.get_users_followers,
-                target_user_id,
-                max_results=100
-            ):
-                if response.data:
-                    followers.extend(response.data)
-                    print(f"Found {len(followers)} followers")  # Log de débogage
+            # Récupérer les followers
+            response = client.get_users_followers(target_user_id)
+            print(f"API Response: {response}")  # Log de débogage
             
-            # Pour le débogage, affichons tous les followers
-            if followers:
-                usernames = [user.username for user in followers]
-                print(f"Follower usernames: {usernames}")  # Log de débogage
-                
-                # Pour le moment, acceptons si nous avons des followers
-                if len(followers) > 0:
-                    return jsonify({
-                        "success": True,
-                        "message": "Congratulations! You earned 50 points!",
-                        "points": 50
-                    })
+            if response and response.data:
+                print(f"Found followers: {[user.username for user in response.data]}")  # Log de débogage
+                return jsonify({
+                    "success": True,
+                    "message": "Congratulations! You earned 50 points!",
+                    "points": 50
+                })
             
             return jsonify({
                 "success": False,
