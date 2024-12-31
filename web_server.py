@@ -1,25 +1,56 @@
-from flask import Flask, render_template, jsonify
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/main')
-def main():
-    print("Accessing main route...")  # Log de débogage
-    return render_template('main.html')
-
 @app.route('/verify-twitter-follow', methods=['POST'])
 def verify_twitter_follow():
-    return jsonify({
-        "success": True,
-        "message": "Congratulations! You earned 50 points!",
-        "points": 50
-    })
+    try:
+        # Configuration du client Twitter
+        client = tweepy.Client(
+            bearer_token=os.getenv('TWITTER_BEARER_TOKEN'),
+            consumer_key=os.getenv('TWITTER_API_KEY'),
+            consumer_secret=os.getenv('TWITTER_API_SECRET'),
+            access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
+            access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+        )
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+        # ID de votre compte EngageVault
+        target_user_id = "1874098225139113984"  # Votre ID Twitter
+        
+        print("Checking followers...")  # Log de débogage
+        
+        try:
+            # Récupérer les followers
+            followers = client.get_users_followers(target_user_id)
+            
+            if followers and followers.data:
+                follower_ids = [user.id for user in followers.data]
+                print(f"Follower IDs: {follower_ids}")  # Log de débogage
+                
+                # Vérifier si l'utilisateur est dans la liste des followers
+                if False:  # On force à False pour tester
+                    return jsonify({
+                        "success": True,
+                        "message": "Congratulations! You earned 50 points!",
+                        "points": 50
+                    })
+                else:
+                    return jsonify({
+                        "success": False,
+                        "message": "You need to follow @EngageVault first!"
+                    })
+            else:
+                return jsonify({
+                    "success": False,
+                    "message": "Could not verify followers. Please try again."
+                })
+                
+        except Exception as e:
+            print(f"Twitter API Error: {str(e)}")  # Log de débogage
+            return jsonify({
+                "success": False,
+                "message": "Error checking follow status. Please try again."
+            })
+            
+    except Exception as e:
+        print(f"Server Error: {str(e)}")  # Log de débogage
+        return jsonify({
+            "success": False,
+            "message": "Server error. Please try again."
+        })
