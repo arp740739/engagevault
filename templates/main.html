@@ -1,62 +1,39 @@
-<!-- Ajoutez ceci en haut du fichier, juste après <script> -->
-<script>
-async function connectWithX() {
-    try {
-        console.log("Starting X connection..."); // Debug log
-        const response = await fetch('/auth/twitter', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-        
-        console.log("Response:", response); // Debug log
-        
-        const data = await response.json();
-        console.log("Data:", data); // Debug log
-        
-        if (data.success && data.auth_url) {
-            window.location.href = data.auth_url;
-        } else {
-            document.querySelector('.error-message').textContent = 'Error connecting to X';
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        document.querySelector('.error-message').textContent = 'Connection error';
-    }
+<!-- Le reste du code reste identique -->
+
+<style>
+/* ... autres styles ... */
+
+.points {
+    color: #4CAF50; /* Changé en vert */
+    font-size: 20px;
+    font-weight: bold;
+    margin: 15px 0;
 }
 
-async function verifyTwitterLink() {
-    try {
-        const response = await fetch('/verify-twitter-follow', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            // Afficher les confettis
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-            
-            document.querySelector('.error-message').textContent = '';
-        } else {
-            document.querySelector('.error-message').textContent = data.message;
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        document.querySelector('.error-message').textContent = 'Verification error';
-    }
+.twitter-button, .verify-button {
+    width: 80%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: all 0.2s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
-</script>
 
-<!-- Ajoutez la bibliothèque confetti -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+.twitter-button {
+    background: #000000; /* Changé en noir */
+    color: white;
+}
 
-<!-- Le reste du HTML reste identique -->
+.verify-button {
+    background: #4CAF50;
+    color: white;
+}
+
+/* ... autres styles ... */
+</style>
