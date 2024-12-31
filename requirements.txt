@@ -1,0 +1,6 @@
+python-telegram-bot
+flask
+python-dotenv
+gunicorn
+flask-cors
+nest-asyncio

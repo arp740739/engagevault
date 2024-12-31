@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EngageVault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Nouveau dégradé avec plus de couleurs */
+            background: linear-gradient(
+                -45deg, 
+                #FF6B6B,  /* Rouge vif */
+                #4ECDC4,  /* Turquoise */
+                #45B7D1,  /* Bleu clair */
+                #96C93D,  /* Vert */
+                #E056FD,  /* Violet */
+                #FF7E5F   /* Orange */
+            );
+            background-size: 300% 300%;
+            animation: gradient 10s ease infinite; /* Animation plus rapide */
+            font-family: 'Arial', sans-serif;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 50% 100%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            75% {
+                background-position: 50% 0%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .loader-container {
+            text-align: center;
+            max-width: 80%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .quote {
+            color: white;
+            font-size: 18px;
+            font-style: italic;
+            margin-top: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            opacity: 0.9;
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="EngageVault Logo">
+        <div class="loading-text">
+            Welcome to EngageVault<span class="loading-dots"></span>
+        </div>
+        <div class="quote">
+            "Transforming Social Engagement into Valuable Opportunities"
+        </div>
+    </div>
+</body>
+</html>
