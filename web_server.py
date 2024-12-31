@@ -22,43 +22,58 @@ def verify_twitter_follow():
         # ID de votre compte EngageVault
         target_user_id = "1874098225139113984"
         
-        print("Checking followers...")  # Log de débogage
+        print("Starting follow verification...")  # Log de débogage
         
-        # Récupérer les followers
-        followers = client.get_users_followers(target_user_id)
-        
-        if followers and followers.data:
-            print(f"Found {len(followers.data)} followers")  # Log de débogage
-            
-            # Vérifier si l'utilisateur est dans la liste
-            is_following = any(
-                follower.username == "VotreNomUtilisateur"  # Remplacez par le nom d'utilisateur à vérifier
-                for follower in followers.data
-            )
-            
-            if is_following:
-                return jsonify({
-                    "success": True,
-                    "message": "Congratulations! You earned 50 points!",
-                    "points": 50
-                })
+        try:
+            # Récupérer les followers avec pagination
+            followers = []
+            for response in tweepy.Paginator(
+                client.get_users_followers,
+                target_user_id,
+                max_results=100
+            ):
+                if response.data:
+                    followers.extend(response.data)
+                    print(f"Found {len(followers)} followers so far...")  # Log de débogage
+                
+            if followers:
+                # Récupérer les usernames des followers
+                follower_usernames = [follower.username for follower in followers]
+                print(f"Follower usernames: {follower_usernames}")  # Log de débogage
+                
+                # Vérifier si l'utilisateur est dans la liste
+                if "EngageVault" in follower_usernames:
+                    print("Follow verified!")  # Log de débogage
+                    return jsonify({
+                        "success": True,
+                        "message": "Congratulations! You earned 50 points!",
+                        "points": 50
+                    })
+                else:
+                    print("User not following")  # Log de débogage
+                    return jsonify({
+                        "success": False,
+                        "message": "You need to follow @EngageVault first!"
+                    })
             else:
+                print("No followers found")  # Log de débogage
                 return jsonify({
                     "success": False,
-                    "message": "You need to follow @EngageVault first!"
+                    "message": "Could not verify followers. Please try again."
                 })
-        else:
-            print("No followers found")  # Log de débogage
+                
+        except Exception as e:
+            print(f"Twitter API Error: {str(e)}")  # Log de débogage
             return jsonify({
                 "success": False,
-                "message": "Could not verify followers. Please try again."
+                "message": f"Twitter API Error: {str(e)}"
             })
             
     except Exception as e:
-        print(f"Error: {str(e)}")  # Log de débogage
+        print(f"Server Error: {str(e)}")  # Log de débogage
         return jsonify({
             "success": False,
-            "message": f"Error checking follow status: {str(e)}"
+            "message": "Server error. Please try again."
         })
 
 @app.route('/')
