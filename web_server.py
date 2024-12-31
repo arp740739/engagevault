@@ -1,22 +1,8 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify
 from flask_cors import CORS
-import tweepy
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
-
-# Configuration Twitter API
-client = tweepy.Client(
-    bearer_token=os.getenv('TWITTER_BEARER_TOKEN'),
-    consumer_key=os.getenv('TWITTER_API_KEY'),
-    consumer_secret=os.getenv('TWITTER_API_SECRET'),
-    access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
-    access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
-)
 
 @app.route('/')
 def home():
@@ -24,27 +10,16 @@ def home():
 
 @app.route('/main')
 def main():
+    print("Accessing main route...")  # Log de débogage
     return render_template('main.html')
 
 @app.route('/verify-twitter-follow', methods=['POST'])
 def verify_twitter_follow():
-    try:
-        print("Verification started...")  # Log de débogage
-        target_user_id = "1874098225139113984"
-        
-        # Version simplifiée pour tester
-        return jsonify({
-            "success": True,
-            "message": "Congratulations! You earned 50 points!",
-            "points": 50
-        })
-        
-    except Exception as e:
-        print(f"Error: {str(e)}")  # Log de débogage
-        return jsonify({
-            "success": False,
-            "message": "Error checking follow status"
-        })
+    return jsonify({
+        "success": True,
+        "message": "Congratulations! You earned 50 points!",
+        "points": 50
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
