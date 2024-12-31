@@ -4,38 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EngageVault - Tasks</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-</head>
-<body>
-    <div class="task-card">
-        <div class="task-icon">🎯</div>
-        <h2>First Task: Link your X account</h2>
-        <div class="points">+50 points</div>
-        <p>Link your X account to earn your first points!</p>
-        <button class="twitter-button" onclick="connectWithX()">
-            <svg viewBox="0 0 24 24" width="16" height="16">
-                <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-            Connect with X
-        </button>
-        <button class="verify-button" onclick="verifyTwitterLink()">
-            Verify Connection
-        </button>
-        <div class="error-message"></div>
-    </div>
-
-    <div class="success-modal" id="successModal">
-        <div class="modal-content">
-            <div class="modal-icon">🎉</div>
-            <h2>Congratulations!</h2>
-            <p class="modal-points">+50 points earned!</p>
-            <p class="modal-message">
-                You've successfully completed your first task! Keep completing tasks to earn more points and unlock exciting rewards in the future.
-            </p>
-            <button class="modal-button" onclick="closeSuccessModal()">Continue</button>
-        </div>
-    </div>
-
     <style>
         body {
             margin: 0;
@@ -59,126 +27,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             width: 90%;
             max-width: 400px;
-        }
-
-        .task-icon {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        h2 {
             color: white;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 24px;
-        }
-
-        .points {
-            color: #4CAF50;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 15px 0;
-            animation: pulse 2s infinite;
-        }
-
-        p {
-            color: #E5E7EB;
-            margin-bottom: 20px;
-        }
-
-        .twitter-button, .verify-button {
-            width: 80%;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            margin: 10px auto;
-            display: block;
-            transition: all 0.2s ease;
-        }
-
-        .twitter-button {
-            background: #000000;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .verify-button {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .twitter-button:hover, .verify-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .success-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .success-modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: rgba(31, 41, 55, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-            border: 2px solid rgba(76, 175, 80, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(8px);
-        }
-
-        .success-modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            animation: bounce 1s infinite;
-        }
-
-        .modal-button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 20px;
-        }
-
-        .error-message {
-            color: #dc3545;
-            margin-top: 10px;
-            font-weight: bold;
         }
 
         @keyframes gradient {
@@ -186,93 +35,12 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
     </style>
-
-    <script>
-        async function connectWithX() {
-            const button = document.querySelector('.twitter-button');
-            try {
-                console.log("Starting X connection...");
-                button.classList.add('loading');
-                
-                const response = await fetch('/auth/twitter');
-                console.log("Response received:", response);
-                
-                const data = await response.json();
-                console.log("Data received:", data);
-                
-                if (data.success && data.auth_url) {
-                    console.log("Redirecting to:", data.auth_url);
-                    window.location.href = data.auth_url;
-                } else {
-                    console.error("Error data:", data);
-                    document.querySelector('.error-message').textContent = data.message || 'Error connecting to X';
-                }
-            } catch (error) {
-                console.error('Connection error:', error);
-                document.querySelector('.error-message').textContent = 'Connection error';
-            } finally {
-                button.classList.remove('loading');
-            }
-        }
-
-        async function verifyTwitterLink() {
-            const button = document.querySelector('.verify-button');
-            const card = document.querySelector('.task-card');
-            
-            try {
-                button.classList.add('loading');
-                const response = await fetch('/verify-twitter-follow', {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    button.classList.add('success');
-                    card.classList.add('success-card');
-                    confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-                    showSuccessModal();
-                } else {
-                    button.classList.add('error');
-                    card.classList.add('error-card');
-                    card.classList.add('shake');
-                    setTimeout(() => {
-                        card.classList.remove('shake');
-                        button.classList.remove('error');
-                        card.classList.remove('error-card');
-                    }, 2000);
-                    document.querySelector('.error-message').textContent = 'Please connect your X account first';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.querySelector('.error-message').textContent = 'Verification error';
-            } finally {
-                button.classList.remove('loading');
-            }
-        }
-
-        function showSuccessModal() {
-            document.getElementById('successModal').classList.add('show');
-        }
-
-        function closeSuccessModal() {
-            document.getElementById('successModal').classList.remove('show');
-        }
-    </script>
+</head>
+<body>
+    <div class="task-card">
+        <h1>Welcome to EngageVault</h1>
+        <p>Task system loading...</p>
+    </div>
 </body>
 </html>
